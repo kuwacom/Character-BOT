@@ -1,0 +1,17 @@
+{
+  "base_model_name": "Llama-3-ELYZA-JP-8B",
+  "base_model_class": "LlamaForCausalLM",
+  "base_loaded_in_4bit": false,
+  "base_loaded_in_8bit": false,
+  "projections": "q, v",
+  "loss": 2.5766,
+  "grad_norm": 0.8035938739776611,
+  "learning_rate": 6.30252100840336e-07,
+  "epoch": 2.982791586998088,
+  "current_steps": 12457,
+  "train_runtime": 225418.0512,
+  "train_samples_per_second": 0.668,
+  "train_steps_per_second": 0.002,
+  "total_flos": 1.729342019689513e+18,
+  "train_loss": 2.8201006869475047
+}
