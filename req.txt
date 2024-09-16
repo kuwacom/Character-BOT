@@ -1,2 +1,10 @@
+langchain-huggingface
+sse_starlette
+langchain-community
+accelerate
+
 langchain
+langserve
 transformers
+fastapi
+uvicorn
