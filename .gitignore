@@ -3,3 +3,18 @@ models
 
 # python
 venv
+
+# node
+node_modules/
+dist/
+
+# DBs
+serverDB/
+userDB/
+playServerTEMP/
+
+# env
+.env
+
+# vscode
+.vscode/
