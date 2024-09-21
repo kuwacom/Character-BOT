@@ -23,7 +23,7 @@ export namespace ChatManager {
     }
 }
 
-export function createChainLlama3() {
+export function createLlama3Chain() {
     return new RemoteRunnable({
         url: env.LANGSERVE_API_ENDPOINT + "/llama3",
     });

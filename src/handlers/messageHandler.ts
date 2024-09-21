@@ -1,6 +1,6 @@
 import { ChannelType, Message } from "discord.js";
 import logger from "../utils/logger";
-import { ChatManager, createChainLlama3 } from "../utils/langChain";
+import { ChatManager, createLlama3Chain } from "../utils/langChain";
 import Llama3Chat, { Llama3CharacterMultiUserChat } from "../utils/chat/llama3Chat";
 import client from "../discord";
 
@@ -102,7 +102,7 @@ export const handleMessage = async (message: Message): Promise<void> => {
     chat.addUserMessage(replacementMessage, message.author.displayName)
 
     if (message.mentions.has(client.user)) {
-        const chain = createChainLlama3();
+        const chain = createLlama3Chain();
         const stream = await chain.stream(chat.getPrompt(), { timeout: 300000 });
 
         const buffer = [];
