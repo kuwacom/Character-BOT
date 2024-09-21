@@ -1,22 +1,22 @@
 import env from "../configs/env";
 import { RemoteRunnable } from "langchain/runnables/remote";
-import Llama3Chat from "./llama3Chat";
+import ChatBase from "./chat/chatBase";
 
 export namespace ChatManager {
-    export const chatHistories: { [sessionId: string]: Llama3Chat } = {};
+    export const chatHistories: { [sessionId: string]: ChatBase } = {};
 
-    export function getChat(sessionId: string) {
+    export function getChat<T extends ChatBase>(sessionId: string): T | null {
         if (!(sessionId in chatHistories)) return null;
-        return chatHistories[sessionId];
+        return chatHistories[sessionId] as T;
     }
 
-    export function createChat(sessionId: string, chat: Llama3Chat) {
+    export function createChat<T extends ChatBase>(sessionId: string, chat: T): T | null {
         if (sessionId in chatHistories) return null;
         chatHistories[sessionId] = chat;
-        return chatHistories[sessionId];
+        return chatHistories[sessionId] as T;
     }
 
-    export function deleteChat(sessionId: string) {
+    export function deleteChat(sessionId: string): boolean {
         if (!(sessionId in chatHistories)) return false;
         delete chatHistories[sessionId];
         return true;
