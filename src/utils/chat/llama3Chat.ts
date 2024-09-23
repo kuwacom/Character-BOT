@@ -1,8 +1,5 @@
-import ChatBase, { ChatOptions } from "./chatBase";
-
-export type MessageRole = "system" | "assistant" | "user" | string;
-export type MessageEntry = [MessageRole, string];
-export type MessageHistory = MessageEntry[];
+import { Runnable } from "@langchain/core/dist/runnables/base";
+import ChatBase, { ChatOptions, MessageData, MessageHistory } from "./chatBase";
 
 export const LLama3InstToken = {
     begin_of_text: '<|begin_of_text|>',
@@ -29,29 +26,46 @@ export type EasyLlama3ChatOptions = {
 export class Llama3CharacterMultiUserChat extends ChatBase {
     characterName: string;
 
-    constructor(systemMessage: string, characterName: string, options: ChatOptions = {}) {
-        super(systemMessage, options);
+    constructor(runnable: Runnable, systemMessage: string, characterName: string, options: ChatOptions = {}) {
+        super(runnable, systemMessage, options);
         this.characterName = characterName;
     }
 
     public addUserMessage(message: string, userName: string = "user") {
-        this.messageHistory.push([
-            'user', `<${userName}>${message}`
-        ]);
+        this.messageHistory.push({
+            role: 'user',
+            message: `<${userName}>${message}`
+        });
     }
 
     public addAssistantMessage(message: string) {
-        this.messageHistory.push([
-            'user', `<${this.characterName}>${message}`
-        ]);
+        this.messageHistory.push({
+            role: 'user',
+            message: `<${this.characterName}>${message}`
+        });
     }
 
+    public addUserReplyMessage(referenceMessage: string, referenceMessageAuthorName: string, message: string, userName: string = "user") {
+        this.messageHistory.push({
+            role: 'user',
+            message: `「<${referenceMessageAuthorName}>${referenceMessage}」への返信: <${userName}>${message}`
+        });
+    }
+
+    public addAssistantReplyMessage(referenceMessage: string, referenceMessageAuthorName: string, message: string) {
+        this.messageHistory.push({
+            role: 'user',
+            message: `「<${referenceMessageAuthorName}>${referenceMessage}」への返信: <${this.characterName}>${message}`
+        });
+    }
+
+
     public getPrompt() {
-        const promptBaseArray = this.getMessageStruct().map((message, index) => {
+        const promptBaseArray = this.getMessageStruct().map((messageData, index) => {
             return (
-                `${LLama3InstToken.start_header_id}${message[0]}${LLama3InstToken.end_header_id}\n`+
+                `${LLama3InstToken.start_header_id}${messageData.role}${LLama3InstToken.end_header_id}\n`+
                 `\n`+
-                message[1] + LLama3InstToken.eot_id
+                messageData.message + LLama3InstToken.eot_id
             )
         });
 
@@ -59,6 +73,24 @@ export class Llama3CharacterMultiUserChat extends ChatBase {
             LLama3InstToken.begin_of_text, // プロンプト始まりのトークン
             ...promptBaseArray,
             `${LLama3InstToken.start_header_id}user${LLama3InstToken.end_header_id}\n\n<${this.characterName}>`
+        ]
+
+        return promptArray.join("")
+    }
+
+    public getReplyPrompt(referenceMessage: string, referenceMessageAuthorName: string) {
+        const promptBaseArray = this.getMessageStruct().map((messageData, index) => {
+            return (
+                `${LLama3InstToken.start_header_id}${messageData.role}${LLama3InstToken.end_header_id}\n`+
+                `\n`+
+                messageData.message + LLama3InstToken.eot_id
+            )
+        });
+
+        const promptArray = [
+            LLama3InstToken.begin_of_text, // プロンプト始まりのトークン
+            ...promptBaseArray,
+            `${LLama3InstToken.start_header_id}user${LLama3InstToken.end_header_id}\n\n「<${referenceMessageAuthorName}>${referenceMessage}」への返信: <${this.characterName}>`
         ]
 
         return promptArray.join("")
@@ -77,11 +109,11 @@ export class Llama3CharacterMultiUserChat extends ChatBase {
 export default class Llama3Chat extends ChatBase {
 
     public getPrompt() {
-        const promptBaseArray = this.getMessageStruct().map((message, index) => {
+        const promptBaseArray = this.getMessageStruct().map((messageData, index) => {
             return (
-                `${LLama3InstToken.start_header_id}${message[0]}${LLama3InstToken.end_header_id}\n`+
+                `${LLama3InstToken.start_header_id}${messageData.role}${LLama3InstToken.end_header_id}\n`+
                 `\n`+
-                message[1] + LLama3InstToken.eot_id
+                messageData.message + LLama3InstToken.eot_id
             )
         });
 
@@ -131,15 +163,17 @@ export class EasyLlama3Chat {
     }
 
     public addUserMessage(message: string) {
-        this.messageHistory.push([
-            "user", message
-        ]);
+        this.messageHistory.push({
+            role: "user",
+            message: message
+        });
     }
 
     public addAssistantMessage(message: string) {
-        this.messageHistory.push([
-            "assistant", message
-        ]);
+        this.messageHistory.push({
+            role: "assistant",
+            message: message
+        });
     }
 
     public getMessageHistory() {
@@ -148,29 +182,21 @@ export class EasyLlama3Chat {
 
     public getMessageStruct(): MessageHistory {
         return [
-            (["system", this.systemMessage] as MessageEntry),
+            ({
+                role: "system",
+                message: this.systemMessage
+            } as MessageData),
             ...this.messageHistory.slice(-this.maxHistory), // maxHistory 分送る
         ]
     }
 
     public getPrompt() {
-        const promptBaseArray = this.getMessageStruct().map((message, index) => {
-            if (message[0] == "system") {
-                return (
-                    `${LLama3InstToken.start_header_id}system${LLama3InstToken.end_header_id}\n`+
-                    message[1] + LLama3InstToken.eot_id
-                )
-            } else if (message[0] == "assistant") {
-                return (
-                    `${LLama3InstToken.start_header_id}assistant${LLama3InstToken.end_header_id}\n`+
-                    message[1] + LLama3InstToken.eot_id
-                )
-            } else if (message[0] == "user") {
-                return (
-                    `${LLama3InstToken.start_header_id}user${LLama3InstToken.end_header_id}\n`+
-                    message[1] + LLama3InstToken.eot_id
-                )
-            } 
+        const promptBaseArray = this.getMessageStruct().map((messageData, index) => {
+            return (
+                `${LLama3InstToken.start_header_id}${messageData.role}${LLama3InstToken.end_header_id}\n`+
+                `\n`+
+                messageData.message + LLama3InstToken.eot_id
+            )
         });
 
         const promptArray = [
@@ -179,6 +205,6 @@ export class EasyLlama3Chat {
             `${LLama3InstToken.start_header_id}assistant${LLama3InstToken.end_header_id}`
         ]
 
-        return promptArray.join("\n")
+        return promptArray.join("")
     }
 }
