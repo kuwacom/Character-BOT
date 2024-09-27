@@ -1,7 +1,6 @@
 import env from "../configs/env";
 import { RemoteRunnable } from "langchain/runnables/remote";
 import ChatBase from "./chat/chatBase";
-import { Runnable } from "@langchain/core/dist/runnables/base";
 
 export namespace ChatManager {
     const chatHistories: { [sessionId: string]: ChatBase } = {};
@@ -27,5 +26,11 @@ export namespace ChatManager {
 export function createLlama3Runnable() {
     return new RemoteRunnable({
         url: env.LANGSERVE_API_ENDPOINT + "/llama3",
+    });
+};
+
+export function createGemma2Runnable() {
+    return new RemoteRunnable({
+        url: env.LANGSERVE_API_ENDPOINT + "/gemma2",
     });
 };
