@@ -1,6 +1,7 @@
 import Discord from "discord.js";
 import { DiscordCommandInteraction } from "../types/discord";
 import { ChatManager } from "../utils/langChain";
+import { Llama3CharacterMultiUserChat } from "../utils/chat/llama3Chat";
 
 export const command = {
     name: "get-prompt",
@@ -18,7 +19,7 @@ export const executeInteraction = async (interaction: DiscordCommandInteraction)
     if (!interaction.guild || !interaction.channel || !interaction.member || !interaction.isChatInputCommand()) return;
     // interactionCommand
 
-    const chat = ChatManager.getChat(interaction.channel.id);
+    const chat = ChatManager.getChat<Llama3CharacterMultiUserChat>(interaction.channel.id);
     if (!chat) {
         interaction.reply({
             content: "このチャンネルの履歴はありません",
@@ -27,8 +28,12 @@ export const executeInteraction = async (interaction: DiscordCommandInteraction)
         return;
     }
 
+    const prompt = chat.getReplyPrompt("testMesage","testUser");
+
+    console.log(prompt);
+    
     interaction.reply({
-        content: "```\n" + chat.getPrompt() + "\n```",
+        content: "```\n" + prompt + "\n```",
         ephemeral: true
     });
 }

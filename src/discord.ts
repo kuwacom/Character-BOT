@@ -1,6 +1,6 @@
 import Discord from "discord.js";
 
-(Discord.DefaultWebSocketManagerOptions.identifyProperties.browser as any) = "Discord iOS"
+// (Discord.DefaultWebSocketManagerOptions.identifyProperties.browser as any) = "Discord iOS"
 
 const client = new Discord.Client({
     intents: [

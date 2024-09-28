@@ -70,7 +70,7 @@ async function debugGlobal() { // デバッグ用の変数
 }
 
 async function statusTask() {
-    // client.user?.setStatus("idle");
+    client.user?.setStatus("idle");
     while (1) {
         // let guildSize // https://discordjs.guide/sharding/#fetchclientvalues
         // await client.shard?.fetchClientValues("guilds.cache.size")

@@ -106,6 +106,12 @@ export const executeInteraction = async (interaction: DiscordCommandInteraction)
         .addComponents(ButtonFormat.HelpBack(0, true))
         .addComponents(ButtonFormat.HelpNext(1));
 
+    if (baseFields.length <= pageSlice) { // コマンドが最低表示数以下の場合はページング無効化
+        button = new Discord.ActionRowBuilder<Discord.ButtonBuilder>()
+            .addComponents(ButtonFormat.HelpBack(0, true))
+            .addComponents(ButtonFormat.HelpNext(1, true));
+    }
+
     const embeds = [
         new Discord.EmbedBuilder()
             .setColor(embedConfig.colors.info)

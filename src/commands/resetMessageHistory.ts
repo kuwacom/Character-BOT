@@ -26,10 +26,10 @@ export const executeInteraction = async (interaction: DiscordCommandInteraction)
         });
         return;
     }
-    
+
     chat.resetMessageHistory();
     interaction.reply({
         content: "リセットしました！",
-        ephemeral: true
+        ephemeral: false
     });
 }
