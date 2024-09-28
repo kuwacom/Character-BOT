@@ -1,0 +1,4 @@
+{
+    "user,assistant": "<|begin_of_text|><|start_header_id|>user<|end_header_id|>\n\n%user%<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n%assistant%<|eot_id|><|end_of_text|>",
+    "user,system,assistant": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\n%system%<|eot_id|><|start_header_id|>user<|end_header_id|>\n\n%user%<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n%assistant%<|eot_id|><|end_of_text|>"
+}

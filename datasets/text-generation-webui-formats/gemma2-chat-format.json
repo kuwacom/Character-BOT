@@ -1,0 +1,4 @@
+{
+    "user,assistant": "<bos><start_of_turn>user\n%user%<end_of_turn>\n<start_of_turn>model\n%assistant%<end_of_turn><eos>",
+    "user,system,assistant": "<bos><start_of_turn>system\n%system%<end_of_turn>\n<start_of_turn>user\n%user%<end_of_turn>\n<start_of_turn>model\n%assistant%<end_of_turn><eos>"
+}
