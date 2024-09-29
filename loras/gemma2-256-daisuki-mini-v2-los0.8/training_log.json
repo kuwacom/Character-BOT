@@ -1,0 +1,17 @@
+{
+  "base_model_name": "EZO-Humanities-9B-gemma-2-it",
+  "base_model_class": "Gemma2ForCausalLM",
+  "base_loaded_in_4bit": false,
+  "base_loaded_in_8bit": false,
+  "projections": "q, v",
+  "loss": 0.5459,
+  "grad_norm": 1.4546568393707275,
+  "learning_rate": 0.00029624999999999996,
+  "epoch": 4.076923076923077,
+  "current_steps": 105,
+  "train_runtime": 548.3421,
+  "train_samples_per_second": 1.842,
+  "train_steps_per_second": 0.474,
+  "total_flos": 5270651941158912.0,
+  "train_loss": 2.9162054860366964
+}
