@@ -1,0 +1,5 @@
+{
+  "template_type": "dataset",
+  "template_1": "<bos><start_of_turn>user\n%user%<end_of_turn>\n<start_of_turn>model\n%assistant%<end_of_turn><eos>",
+  "template_2": "<bos><start_of_turn>system\n%system%<end_of_turn>\n<start_of_turn>user\n%user%<end_of_turn>\n<start_of_turn>model\n%assistant%<end_of_turn><eos>"
+}
